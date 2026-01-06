@@ -42,14 +42,6 @@ else
     exit
 fi
 
-# shell switch
-if ask_yes_no "Make zsh the default shell?"; then
-    chsh -s /usr/bin/zsh
-    zsh
-else
-    echo "Leaving shell as is."
-fi
-
 # Base packages
 if ask_yes_no "Install base packages?"; then
     echo "Installing base packages...."
