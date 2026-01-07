@@ -58,7 +58,7 @@ stage_min_full() {
 	2 "Minimal Installation" \
 	3 "Exit" 3>&1 1>&2 2>&3)
 
-	case $CHOCIE in
+	case $CHOICE in
 		1)
 			yay -Syuu $PKG_MIN $PKG_MIN_AUR $PKG_FULL $PKG_FULL_AUR --noconfirm
 			;;
