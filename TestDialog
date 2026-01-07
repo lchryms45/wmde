@@ -11,6 +11,18 @@ PKG_FULL_AUR="windowmaker-extra sddm-conf picom-conf downgrade usbimager"
 PKG_FONTS="ttf-dejavu ttf-ibm-plex ttf-roboto ttf-roboto-mono"
 PKG_MEDIA="gimp gimp-plugin-gmic inkscape audacity blender handbrake kdenlive obs-studio soundconverter"
 
+# Yes/No function
+ask_yes_no() {
+    while true; do
+        read -p "$1 (y/n): " answer
+        case $answer in
+            [Yy]* ) return 0;;  # Yes
+            [Nn]* ) return 1;;  # No
+            * ) echo "Please answer yes or no.";;
+        esac
+    done
+}
+
 echo "--------------------------------"
 echo "Window Maker Desktop Environment"
 echo "--------------------------------"
