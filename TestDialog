@@ -2,44 +2,22 @@
 
 # Definitions
 PKG_MIN="sddm xterm polkit-gnome sxhkd wmctrl xorg-xset xorg-mkfontscale xorg-xev xdg-user-dirs \
-pcmanfm pavucontrol parcellite nano udiskie gvfs gvfs-mtp gvfs-nfs gvfs-smb openssh networkmanager"
+pcmanfm pavucontrol parcellite nano udiskie gvfs gvfs-mtp gvfs-nfs gvfs-smb openssh networkmanager \
+brightnessctl cpupower"
 PKG_FULL="picom arandr alacritty micro xscreensaver pasystray galculator geeqie vlc screengrab \
 rofi gpick mousepad gparted filezilla gufw qbittorrent network-manager-applet firefox lxappearance \
-kvantum dconf-editor gparted noto-fonts"
+kvantum dconf-editor gparted noto-fonts mupdf"
 PKG_MIN_AUR="windowmaker xdgmenumaker"
 PKG_FULL_AUR="windowmaker-extra sddm-conf picom-conf downgrade usbimager"
 PKG_FONTS="ttf-dejavu ttf-ibm-plex ttf-roboto ttf-roboto-mono"
-PKG_MEDIA="gimp gimp-plugin-gmic inkscape audacity blender handbrake kdenlive obs-studio soundconverter"
-
-# Yes/No function
-ask_yes_no() {
-    while true; do
-        read -p "$1 (y/n): " answer
-        case $answer in
-            [Yy]* ) return 0;;  # Yes
-            [Nn]* ) return 1;;  # No
-            * ) echo "Please answer yes or no.";;
-        esac
-    done
-}
+PKG_APPS_AUDIO="audacity soundconverter"
+PKG_APPS_GFX="gimp gimp-plugin-gmic inkscape"
+PKG_APPS_OFFICE="libreoffice-fresh"
+PKG_APPS_VIDEO="blender handbrake kdenlive obs-studio"
 
 echo "--------------------------------"
 echo "Window Maker Desktop Environment"
 echo "--------------------------------"
-# start install
-if ask_yes_no "Begin installation?"; then
-    sudo pacman -S --needed git base-devel --noconfirm
-else
-    echo "Installation cancelled."
-    exit
-fi
-# install yay
-echo "Installing yay..."
-cd /tmp
-git clone https://aur.archlinux.org/yay.git
-cd yay
-makepkg -si
-cd
 
 if which dialog >/dev/null; then
 	echo Starting WMDE installer...
@@ -49,25 +27,54 @@ else
 fi
 
 # Installer Dialog
+stage_start() {
+    # Confirm if the user wants to run the pacman command
+    if ! dialog --title "Window Maker Desktop Environment"\
+    --yesno "Begin installation?" 5 50; then
+        echo "Exiting..."
+        exit 0
+    fi
+    
+    sudo pacman -Syuu --needed git base-devel --noconfirm
+	if which yay >/dev/null; then
+		echo yay already installed. Continuing with installation...
+	else
+		echo yay not installed - installing now...
+		cd /tmp
+		git clone https://aur.archlinux.org/yay.git
+		cd yay
+		makepkg -si
+		cd
+	fi
+}
+
 stage_min_full() {
 	CHOICE=$(dialog --title "Window Maker Desktop Environment" --menu \
 	"A preconfigured Window Maker desktop for Arch Linux\
 	\n\nFULL installs all recommended packages.\
-	\nMINIMAL tries to keep to the bare minimum." 15 60 2 \
+	\nMINIMAL tries to keep to the bare minimum." 13 60 3 \
 	1 "Full Installation" \
 	2 "Minimal Installation" \
 	3 "Exit" 3>&1 1>&2 2>&3)
 
+	if [ $? -ne 0 ]; then
+		echo "Exiting installer."
+		exit 0
+	fi
+
 	case $CHOICE in
 		1)
-			yay -Syuu $PKG_MIN $PKG_MIN_AUR $PKG_FULL $PKG_FULL_AUR --noconfirm
+			echo "Installing full desktop"
+			yay -S $PKG_MIN $PKG_MIN_AUR $PKG_FULL $PKG_FULL_AUR --noconfirm
 			;;
 		2)
 			echo "Installing minimum"
-			yay -Syuu $PKG_MIN $PKG_MIN_AUR --noconfirm
+			yay -S $PKG_MIN $PKG_MIN_AUR --noconfirm
 			;;
 		3)
 			echo "Exiting installer."
+			dialog --msgbox "Exiting installer." 5 30
+			exit 0
 			;;
 		*)
 			echo "Invalid selection."
@@ -75,8 +82,68 @@ stage_min_full() {
 	esac
 }
 
+stage_fonts() {
+	dialog --title "Window Maker Desktop Environment" --yesno "Install extra fonts?" 5 50
+
+ if [[ $? -eq 0 ]]; then
+        sudo pacman -S $PKG_FONTS --noconfirm
+    else
+        echo "Skipping extra fonts."
+    fi
+}
+
+stage_apps() {
+    # Show checklist and capture the output directly
+    selected_features=$(dialog --title "Window Maker Desktop Environment" \
+    --checklist "Install multimedia applications" 12 60 4 \
+    1 "Audio editing" on \
+    2 "Graphics editors" on \
+    3 "Office suite" on \
+    4 "Video editing" on --stdout)
+    
+    if [[ $? -ne 0 ]]; then
+        echo "Cancelled."
+        exit 1
+    fi
+    
+    # Loop through the selections and execute copy functions
+    for feature in $selected_features; do
+        case "$feature" in
+            1) sudo pacman -S $PKG_APPS_AUDIO --noconfirm ;;
+            2) sudo pacman -S $PKG_APPS_GFX --noconfirm ;;
+            3) sudo pacman -S $PKG_APPS_OFFICE --noconfirm ;;
+            4) sudo pacman -S $PKG_APPS_VIDEO --noconfirm ;;
+        esac
+    done
+}
+
 # Dialog stages
+stage_start
 stage_min_full
+stage_fonts
+stage_apps
 
 # Dialog end
-dialog --title "Completion" --msgbox "Setup Complete!\n\nThat's it." 15 70
+CHOICE=$(dialog --title "Window Maker Desktop Environment" \
+--menu "Installation complete! Reboot now?" 9 50 2 \
+1 "Reboot" \
+2 "Exit installer" 3>&1 1>&2 2>&3)
+
+if [ $? -ne 0 ]; then
+	echo "Exiting installer."
+    exit 0
+fi
+
+case $CHOICE in
+    1)
+        echo "Rebooting system..."
+        reboot
+        ;;
+    2)
+        echo "Exiting installer."
+        exit 0
+        ;;
+    *)
+        echo "Invalid selection."
+        ;;
+esac
