@@ -60,7 +60,6 @@ stage_min_full() {
 
 	case $CHOCIE in
 		1)
-			echo "Installing full desktop"
 			yay -Syuu $PKG_MIN $PKG_MIN_AUR $PKG_FULL $PKG_FULL_AUR --noconfirm
 			;;
 		2)
