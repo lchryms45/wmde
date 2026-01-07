@@ -1,0 +1,71 @@
+#!/bin/bash
+
+# Definitions
+PKG_MIN="sddm xterm polkit-gnome sxhkd wmctrl xorg-xset xorg-mkfontscale xorg-xev xdg-user-dirs \
+pcmanfm pavucontrol parcellite nano udiskie gvfs gvfs-mtp gvfs-nfs gvfs-smb openssh networkmanager"
+PKG_FULL="picom arandr alacritty micro xscreensaver pasystray galculator geeqie vlc screengrab \
+rofi gpick mousepad gparted filezilla gufw qbittorrent network-manager-applet firefox lxappearance \
+kvantum dconf-editor gparted noto-fonts"
+PKG_MIN_AUR="windowmaker xdgmenumaker"
+PKG_FULL_AUR="windowmaker-extra sddm-conf picom-conf downgrade usbimager"
+PKG_FONTS="ttf-dejavu ttf-ibm-plex ttf-roboto ttf-roboto-mono"
+PKG_MEDIA="gimp gimp-plugin-gmic inkscape audacity blender handbrake kdenlive obs-studio soundconverter"
+
+echo "--------------------------------"
+echo "Window Maker Desktop Environment"
+echo "--------------------------------"
+# start install
+if ask_yes_no "Begin installation?"; then
+    sudo pacman -S --needed git base-devel --noconfirm
+else
+    echo "Installation cancelled."
+    exit
+fi
+# install yay
+echo "Installing yay..."
+cd /tmp
+git clone https://aur.archlinux.org/yay.git
+cd yay
+makepkg -si
+cd
+
+if which dialog >/dev/null; then
+	echo Starting WMDE installer...
+else
+	echo Dialog is not installed. Installing now...
+	sudo pacman -S dialog --noconfirm
+fi
+
+# Installer Dialog
+stage_min_full() {
+	CHOICE=$(dialog --title "Window Maker Desktop Environment" --menu \
+	"A preconfigured Window Maker desktop for Arch Linux\
+	\n\nFULL installs all recommended packages.\
+	\nMINIMAL tries to keep to the bare minimum." 15 60 2 \
+	1 "Full Installation" \
+	2 "Minimal Installation" \
+	3 "Exit" 3>&1 1>&2 2>&3)
+
+	case $CHOCIE in
+		1)
+			echo "Installing full desktop"
+			yay -Syuu $PKG_MIN $PKG_MIN_AUR $PKG_FULL $PKG_FULL_AUR --noconfirm
+			;;
+		2)
+			echo "Installing minimum"
+			yay -Syuu $PKG_MIN $PKG_MIN_AUR --noconfirm
+			;;
+		3)
+			echo "Exiting installer."
+			;;
+		*)
+			echo "Invalid selection."
+			;;
+	esac
+}
+
+# Dialog stages
+stage_min_full
+
+# Dialog end
+dialog --title "Completion" --msgbox "Setup Complete!\n\nThat's it." 15 70
