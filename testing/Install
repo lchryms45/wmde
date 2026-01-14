@@ -1,0 +1,280 @@
+#!/bin/bash
+# WMDE Installer 0.1
+# Updated: 12/01/2026
+
+# Locations
+DIR_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR_INCLUDES="$DIR_SCRIPT/includes"
+DIR_TMP="$DIR_SCRIPT/tmp"
+DIR_THEME_GTK_DEST="$DIR_SCRIPT/theme_gtk_test"
+DIR_THEME_WM_DEST="$DIR_SCRIPT/theme_wm_test"
+DIR_THEME_ICO_DEST="$DIR_SCRIPT/theme_ico_test"
+DIR_THEME_CUR_DEST="$DIR_SCRIPT/theme_cur_test"
+DIR_THEME_FON_DEST="$DIR_SCRIPT/theme_fon_test"
+URL_THEMES="https://wmde.goreshit.co.uk/themes"
+URL_DOCKAPPS="https://wmde.goreshit.co.uk/dockapps"
+USER_AGENT="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36"
+
+declare -A THEME_DEPS
+# Theme dependencies
+THEME_DEPS["BeOS"]="$URL_THEMES/cur_beos.zip $URL_THEMES/gtk_beos.zip $URL_THEMES/ico_beos.zip $URL_THEMES/wm_beos.zip $URL_THEMES/fon_swiss.zip"
+THEME_DEPS["Bluecurve"]="$URL_THEMES/gtk_bluecurve.zip $URL_THEMES/ico_bluecurve.zip $URL_THEMES/wm_bluecurve.zip $URL_THEMES/gtk_bluecurve_grape.zip $URL_THEMES/wm_bluecurve_grape.zip $URL_THEMES/fon_luxi.zip"
+THEME_DEPS["C64"]="$URL_THEMES/cur_pixel.zip $URL_THEMES/gtk_c64.zip $URL_THEMES/ico_pixel.zip $URL_THEMES/wm_c64.zip $URL_THEMES/fon_c64.zip"
+THEME_DEPS["DesktopPal97"]="$URL_THEMES/cur_win9x.zip $URL_THEMES/gtk_dp97.zip $URL_THEMES/ico_beos.zip $URL_THEMES/wm_dp97.zip"
+THEME_DEPS["Irix"]="$URL_THEMES/cur_sgi.zip $URL_THEMES/gtk_irixium.zip $URL_THEMES/ico_beos.zip $URL_THEMES/wm_irix.zip $URL_THEMES/fon_swiss.zip"
+THEME_DEPS["MacOS9"]="$URL_THEMES/gtk_macos9.zip $URL_THEMES/ico_macos9.zip $URL_THEMES/wm_macos9.zip $URL_THEMES/fon_macos9.zip"
+THEME_DEPS["Solaris9"]="$URL_THEMES/gtk_solaris9.zip $URL_THEMES/ico_cde.zip $URL_THEMES/wm_solaris9.zip"
+THEME_DEPS["Win31"]="$URL_THEMES/cur_win9x.zip $URL_THEMES/gtk_win31.zip $URL_THEMES/ico_win9x.zip $URL_THEMES/wm_win31.zip $URL_THEMES/fon_win9x.zip"
+THEME_DEPS["Win95"]="$URL_THEMES/cur_win9x.zip $URL_THEMES/gtk_win9x.zip $URL_THEMES/ico_win9x.zip $URL_THEMES/wm_win95.zip $URL_THEMES/fon_win9x.zip"
+THEME_DEPS["WinXP"]="$URL_THEMES/cur_winxp.zip $URL_THEMES/gtk_winxp.zip $URL_THEMES/ico_winxp.zip $URL_THEMES/wm_winxp.zip $URL_THEMES/fon_win9x.zip"
+
+declare -A DOCKAPP_URLS
+# Dockapp downloads
+DOCKAPP_URLS["wmtime"]="$URL_DOCKAPPS/wmtime.tar.gz"
+DOCKAPP_URLS["wmifinfo"]="$URL_DOCKAPPS/wmifinfo.tar"
+DOCKAPP_URLS["wmnd"]="$URL_DOCKAPPS/wmnd.tar.gz"
+DOCKAPP_URLS["wmArchUp"]="$URL_DOCKAPPS/wmarchup.tar.gz"
+DOCKAPP_URLS["wmamixer"]="$URL_DOCKAPPS/wmamixer.tar.gz"
+DOCKAPP_URLS["wmbattery"]="$URL_DOCKAPPS/wmbattery.tar.gz"
+DOCKAPP_URLS["wmbright"]="$URL_DOCKAPPS/wmbright.tar.gz"
+DOCKAPP_URLS["wmsystemtray"]="$URL_DOCKAPPS/wmsystemtray.tar.gz"
+DOCKAPP_URLS["wmcpufreqmod"]="$URL_DOCKAPPS/wmcpufreqmod.tar.xz"
+DOCKAPP_URLS["wmmon"]="$URL_DOCKAPPS/wmmon.tar.gz"
+DOCKAPP_URLS["wmressel"]="$URL_DOCKAPPS/wmressel.tar.gz"
+DOCKAPP_URLS["wmcalc"]="$URL_DOCKAPPS/wmcalc.tar.gz"
+
+# Includes
+for f in $DIR_INCLUDES/*; do
+	if [[ -f "$f" && -r "$f" ]]; then
+		source "$f"
+	fi
+done
+
+# Definitions
+TITLE="Window Maker Desktop Environment"
+
+
+CHECK_WHIPTAIL() {
+	if command -v whiptail >/dev/null; then
+		echo "Starting WMDE installer"
+	else
+		echo "Whiptail not found! Installing now..." && sleep 1
+		sudo pacman -S libnewt --noconfirm
+	fi
+}
+
+PAGE_INSTALL() {
+	if whiptail --title "$TITLE" --yesno \
+		"WMDE is a preconfigured Window Maker desktop environment for Arch Linux based systems.\n\n\
+		For more information visit wmde.goreshit.co.uk\n\n\
+		Begin installation?" 12 60; then
+			echo "Updating system..." && sleep 1
+			sudo pacman -Syu --needed git base-devel --noconfirm
+		else
+			echo "Installation cancelled."
+			exit 0
+		fi
+
+		if ! command -v yay >/dev/null; then
+			echo "yay not found. Installing now..." && sleep 2
+			cd /tmp || exit
+			git clone https://aur.archlinux.org/yay.git
+			cd yay && makepkg -si --noconfirm
+			cd "$DIR_SCRIPT" || exit
+		fi
+		
+		echo "Installing base packages..."
+		sudo pacman -S --needed $PKG_BASE --noconfirm
+		yay -S --needed $PKG_BASE_AUR --noconfirm
+		mkdir -p "$DIR_TMP"
+}
+
+PAGE_APPS() {
+	CHOICES=$(whiptail --title "$TITLE" --checklist \
+	"Install applications" 12 60 4 \
+	"NETWORKING" "P2P and FTP applications" OFF \
+	"OFFICE"  "LibreOffice Suite" OFF \
+	"MULTIMEDIA" "Graphics/Sound/Video editors/tools" OFF \
+	"LIGHTWEIGHT" "Alternatives for low end systems" OFF \
+	3>&1 1>&2 2>&3)
+
+	for CHOICE in $CHOICES; do
+		CHOICE=$(echo "$CHOICE" | sed 's/"//g')
+		case "$CHOICE" in
+			NETWORKING) yay -S --needed $PKG_APPS_NET --noconfirm ;;
+			OFFICE) yay -S --needed $PKG_APPS_OFFICE --noconfirm ;;
+			MULTIMEDIA) yay -S --needed $PKG_APPS_MEDIA --noconfirm ;;
+			LIGHTWEIGHT) yay -S --needed $PKG_APPS_LIGHT --noconfirm ;;
+		esac
+	done
+}
+
+PAGE_THEMES_GLOBAL() {
+	CHOICES=$(whiptail --title "$TITLE" --cancel-button "Skip" \
+	--checklist "Install Global Themes\n\
+	Themes that aim to create a unified look across Window Maker, GTK and QT applications." 15 60 10 \
+	"BeOS" "BeOS R5/Haiku style" OFF \
+	"Bluecurve" "Classic Red Hat Linux look" OFF \
+	"C64" "Commodore 64 theme" OFF \
+	"DesktopPal97" "Gloriously garish!" OFF \
+	"Irix" "The look of old SGI workstations" OFF \
+	"MacOS9" "Mac (classic) OS 9 look" OFF \
+	"Solaris9" "Oracle Solaris CDE theme" OFF \
+	"Win31" "Windows 3.1 theme" OFF \
+	"Win95" "Windows 95 theme" OFF \
+	"WinXP" "Windows XP (Luna) theme" OFF \
+	3>&1 1>&2 2>&3)
+
+	if [ -z "$CHOICES" ]; then
+		echo "No themes selected."
+		return
+	fi
+
+	echo "Downloading theme files..."
+	
+	# 1. Collect all URLs based on selected themes
+	RAW_URLS=""
+	for CHOICE in $CHOICES; do
+		CHOICE=$(echo "$CHOICE" | sed 's/"//g') # Remove quotes
+		RAW_URLS+="${THEME_DEPS[$CHOICE]} "
+	done
+
+	# 2. Get unique URLs and store them in the variable wget expects
+	UNIQUE_URLS=$(echo "$RAW_URLS" | tr ' ' '\n' | sort -u)
+
+	# 3. Download the files (using cd to ensure unzipping works in the right place)
+	cd "$DIR_TMP" || exit
+	echo "$UNIQUE_URLS" | wget -i - \
+	--user-agent="$USER_AGENT" \
+	--referer="www.google.com" \
+	--no-clobber \
+	--show-progress
+	mkdir -p "$HOME/.icons" "$HOME/.fonts" "$HOME/.themes" "$HOME/GNUstep/Library/WindowMaker/Themes"
+	for file_path in "$DIR_TMP"/*.zip; do
+		# Skip if no files found
+		[ -e "$file_path" ] || continue
+		
+		# Get just the filename (e.g., cur_beos.zip) for the case match
+		file=$(basename "$file_path")
+		
+		case "$file" in
+		cur_*)
+			unzip -n "$file_path" -d "$HOME/.icons"
+			;;
+		fon_*)
+			unzip -n "$file_path" -d "$HOME/.fonts"
+			;;
+		gtk_*)
+			unzip -n "$file_path" -d "$HOME/.themes"
+			;;
+		ico_*)
+			unzip -n "$file_path" -d "$HOME/.icons"
+			;;
+		wm_*)
+			unzip -n "$file_path" -d "$HOME/GNUstep/Library/WindowMaker/Themes"
+			;;
+		*)
+			echo "Skipping $file: No matching prefix found."
+			;;
+		esac
+	done
+	echo "Themes installed!" && sleep 1
+}
+
+PAGE_DOCKAPPS() {
+	CHOICES=$(whiptail --title "$TITLE" --cancel-button "Skip" \
+	--checklist "Install Dockapps" 15 60 12 \
+	"wmtime" "Clock (digital or analog) with date" ON \
+	"wmifinfo" "Network information (IP, netmask, etc)" OFF \
+	"wmnd" "Network upload/download speed" OFF \
+	"wmArchUp" "Arch update checker" OFF \
+	"wmamixer" "Audio mixer/volume control" ON \
+	"wmbattery" "Laptop battery status" OFF \
+	"wmbright" "Screenbrightness control" OFF \
+	"wmsystemtray" "System tray" ON \
+	"wmcpufreqmod" "Displays CPU and governor" OFF \
+	"wmmon" "Multi monitor (CPU/RAM/IO)" OFF \
+	"wmressel" "Display resolution switcher" OFF \
+	"wmcalc" "Calculator in your dock" OFF \
+	3>&1 1>&2 2>&3)
+
+	if [ -z "$CHOICES" ]; then
+		echo "No dockapps installed."
+		return
+	fi
+
+	mkdir -p "$DIR_TMP/dockapps_src"
+	cd "$DIR_TMP/dockapps_src" || exit
+
+	for CHOICE in $CHOICES; do
+		CHOICE=$(echo "$CHOICE" | sed 's/"//g')
+		URL="${DOCKAPP_URLS[$CHOICE]}"
+		
+		if [ -n "$URL" ]; then
+			echo "Downloading dockapps..."
+			FILE=$(basename "$URL")
+			wget --user-agent="$USER_AGENT" --no-clobber "$URL"
+			
+			echo "Extracting files..."
+			tar -xvf "$FILE"
+
+			EXTRACTED_DIR=$(find . -maxdepth 1 -type d -not -path '.' -printf '%T@ %p\n' | sort -n | tail -1 | cut -f2- -d" ")
+			
+			if [ -d "$EXTRACTED_DIR" ]; then
+				cd "$EXTRACTED_DIR" || continue
+				echo "Compiling $CHOICE..."
+				
+				if [ -f "./configure" ]; then
+					./configure --prefix=/usr
+				fi
+				
+				make -j$(nproc)
+				sudo make install
+				
+				cd ..
+				echo "$CHOICE installed successfully."
+			fi
+		fi
+	done
+	echo "Dockapps installed!" && sleep 1
+}
+
+PAGE_OPTIONS() {
+	CHOICES=$(whiptail --title "$TITLE" --checklist --nocancel \
+	"WMDE Configuration Options" 10 60 2 \
+	"Compositing" "Enables transparency and shadows" ON \
+	"Alt. Keybinds"  "Enable i3 like keybinds" OFF \
+	3>&1 1>&2 2>&3)
+
+	for CHOICE in $CHOICES; do
+		CHOICE=$(echo "$CHOICE" | sed 's/"//g')
+		case "$CHOICE" in
+			NETWORKING) yay -S --needed $PKG_APPS_NET --noconfirm ;;
+			OFFICE) yay -S --needed $PKG_APPS_OFFICE --noconfirm ;;
+			MULTIMEDIA) yay -S --needed $PKG_APPS_MEDIA --noconfirm ;;
+			LIGHTWEIGHT) yay -S --needed $PKG_APPS_LIGHT --noconfirm ;;
+		esac
+	done
+}
+
+FINALIZE() {
+	cd /usr/share/fonts/misc
+	sudo mkfontdir
+	sudo mkfontscale
+	sudo xset fp rehash
+
+	rm -r $DIR_TMP
+}
+
+PAGE_DONE() {
+	whiptail --title "$TITLE" --msgbox "All done!" 8 60
+}
+
+# execution
+CHECK_WHIPTAIL
+PAGE_INSTALL
+PAGE_APPS
+PAGE_THEMES_GLOBAL
+PAGE_DOCKAPPS
+FINALIZE
+PAGE_DONE

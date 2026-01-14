@@ -1,0 +1,28 @@
+PKG_BASE="\
+xorg-xev xorg-xrdb xorg-xset xorg-xprop xorg-xkill xorg-xrandr xclip xorg-xclipboard \
+xorg-xfontsel xorg-font-util xorg-fonts-misc xorg-mkfontscale \
+xdg-user-dirs xdg-utils xdg-desktop-portal-gtk dconf-editor \
+sddm polkit-gnome alacritty micro btop sxhkd wmctrl picom \
+udiskie pcmanfm gvfs gvfs-mtp gvfs-nfs gvfs-smb gvfs-google gparted \
+xarchiver arj binutils bzip2 cpio gzip lha lrzip lz4 lzip lzop p7zip tar unarj unrar unzip xz zip zstd \
+galculator geeqie vlc gpick mousepad gimp gimp-plugin-gmic feh \
+firefox openssh networkmanager network-manager-applet gufw wget \
+arandr xscreensaver pavucontrol pasystray lxappearance xfce4-appfinder \
+terminus-font adwaita-fonts"
+
+PKG_BASE_AUR="\
+sddm-conf windowmaker windowmaker-extra xdgmenumaker picom-conf selectdefaultapplication-git \
+qt5gtk2 qt6gtk2 noto-fonts-lite ttf-ms-fonts ttf-tahoma adobe-base-14-fonts ttf-lucida-fonts \
+downgrade xcursor-retrosmart skippy-xd-git"
+
+PKG_APPS_NET="\
+filezilla qbittorrent nicotine+"
+
+PKG_APPS_OFFICE="\
+libreoffice-fresh"
+
+PKG_APPS_MEDIA="\
+inkscape audacity soundconverter obs-studio kdenlive handbrake blender"
+
+PKG_APPS_LIGHT="\
+netsurf mtpaint xterm"
