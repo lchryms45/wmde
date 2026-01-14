@@ -1,0 +1,107 @@
+# WMDE base packages
+
+# System tools
+xdg-desktop-portal-gtk
+xdg-user-dirs
+xdg-utils
+xclip
+xdotool
+xorg-fonts-misc
+xorg-font-util
+xorg-mkfontscale
+xorg-xclipboard
+xorg-xev
+xorg-xfontsel
+xorg-xkill
+xorg-xprop
+xorg-xrandr
+xorg-xrdb
+xorg-xset
+
+# Mount tools
+gvfs
+gvfs-google
+gvfs-mtp
+gvfs-nfs
+gvfs-smb
+udiskie
+
+# Archive tools
+arj
+binutils
+bzip2
+cpio
+gzip
+lha
+lrzip
+lz4
+lzip
+lzop
+p7zip
+tar
+unarj
+unrar
+unzip
+xz
+zip
+zstd
+
+# Network tools
+networkmanager
+openssh
+wget
+
+# Desktop environment
+picom
+polkit-gnome
+sddm
+windowmaker
+
+# Window manager tools
+sxhkd
+wmctrl
+
+# Fonts
+noto-fonts
+terminus-font
+
+# Applications, TUI
+btop
+micro
+
+# Applications, System, GUI
+alacritty
+gparted
+pcmanfm
+xarchiver
+xterm
+
+# Applications, Network, GUI
+firefox
+
+# Applications, Multimedia, GUI
+feh
+galculator
+geeqie
+gpick
+mousepad
+vlc
+
+# Preferences, GUI
+arandr
+dconf-editor
+lxappearance
+pavucontrol
+xscreensaver
+
+# System Tray applets
+network-manager-applet
+pasystray
+xfce4-appfinder
+
+# Appearance
+adwaita-cursors
+adwaita-icon-theme-legacy
+adwaita-icon-theme
+gnome-themes-extra
+xcursor-dmz

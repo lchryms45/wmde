@@ -1,0 +1,30 @@
+# WMDE base packages (from AUR)
+
+# Desktop environment
+windowmaker-extra
+xdgmenumaker
+
+# Window manager tools
+skippy-xd-git
+
+# Fonts
+adobe-base-14-fonts
+ttf-lucida-fonts
+ttf-ms-fonts
+ttf-tahoma
+
+# Preferences, GUI
+picom-conf
+sddm-conf
+selectdefaultapplication-git
+
+# Appearance
+tango-icon-theme
+tango-icon-theme-extras
+
+# Dockapps
+libdockapp
+wmamixer
+wmbattery
+wmsystemtray
+wmtime
