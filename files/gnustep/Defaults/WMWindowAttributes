@@ -1,21 +1,17 @@
 {
-  firefox.Firefox = {
+  mousepad.Mousepad = {
     SharedAppIcon = Yes;
-    Icon = "applications-internet.png";
   };
   pcmanfm.Pcmanfm = {
     Icon = "~/GNUstep/Library/Icons/GNUstep/system-file-manager.png";
   };
-  mousepad.Mousepad = {
-    SharedAppIcon = Yes;
+  Alacritty.Alacritty = {
+    EmulateAppIcon = Yes;
+    Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
   };
   Pcmanfm = {
     AlwaysUserIcon = Yes;
     Icon = "file-manager.png";
-  };
-  Alacritty.Alacritty = {
-    EmulateAppIcon = Yes;
-    Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
   };
   Alacritty = {
     AlwaysUserIcon = Yes;
@@ -26,19 +22,11 @@
     AlwaysUserIcon = Yes;
     Icon = monitor.xpm;
   };
-  firefox = {
-    AlwaysUserIcon = Yes;
-    Icon = "applications-internet.png";
-  };
   xterm.XTerm = {
     Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
   };
   arandr. = {
     Icon = monitor.xpm;
-  };
-  Navigator.firefox = {
-    AlwaysUserIcon = Yes;
-    Icon = "applications-internet.png";
   };
   "*" = {
     AlwaysUserIcon = No;
