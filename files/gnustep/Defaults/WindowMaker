@@ -4,9 +4,10 @@
   FrameBorderColor = "#000000";
   MenuDisabledColor = "#7f7f7f";
   PixmapPath = (
-    "$HOME/GNUstep/Library/WindowMaker/Pixmaps",
-    "$HOME/GNUstep/Library/WindowMaker/Backgrounds",
-    "$HOME/GNUstep/Library/WindowMaker/CachedPixmaps",
+    "~/GNUstep/Library/Icons"
+    "~/GNUstep/Library/WindowMaker/Pixmaps",
+    "~/GNUstep/Library/WindowMaker/Backgrounds",
+    "~/GNUstep/Library/WindowMaker/CachedPixmaps",
     "~/pixmaps",
     "/usr/share/WindowMaker/Pixmaps",
     "/usr/share/WindowMaker/Backgrounds",
@@ -70,9 +71,10 @@
   MoveToWorkspace6Key = "Shift+Mod1+6";
   HideOthersKey = "Shift+Mod1+H";
   IconPath = (
-    "$HOME/GNUstep/Library/Icons",
-    "$HOME/GNUstep/Library/WindowMaker/Pixmaps",
-    "$HOME/GNUstep/Library/WindowMaker/CachedPixmaps",
+    "~/GNUstep/Library/Icons"
+    "~/GNUstep/Library/WindowMaker/Pixmaps",
+    "~/GNUstep/Library/WindowMaker/Backgrounds",
+    "~/GNUstep/Library/WindowMaker/CachedPixmaps",
     "~/pixmaps",
     "/usr/share/WindowMaker/Icons",
     "/usr/share/WindowMaker/Pixmaps",

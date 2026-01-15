@@ -64,8 +64,8 @@ INST_DOCKAPPS() {
 INST_CONFIG() {
 	cp -a $DIR_SCRIPT/files/config/. $HOME/.config
 	cp -a $DIR_SCRIPT/files/wmde/. $HOME/.wmde
-	cp -a $DIR_SCRIPT/files/gnustep/Defaults $HOME/GNUstep/Defaults
-	cp -a $DIR_SCRIPT/files/gnustep/Themes $HOME/GNUstep/Library/WindowMaker
+	cp -a $DIR_SCRIPT/files/gnustep/Defaults/. $HOME/GNUstep/Defaults
+	cp -a $DIR_SCRIPT/files/gnustep/Themes/. $HOME/GNUstep/Library/WindowMaker/Themes
 	cp -a $DIR_SCRIPT/files/gnustep/autostart $HOME/GNUstep/Library/WindowMaker
 }
 
