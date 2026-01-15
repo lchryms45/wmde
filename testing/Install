@@ -4,6 +4,8 @@
 
 # Locations
 DIR_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR_WMDE="$HOME/.wmde"
+DIR_BACKUP="$HOME/.wmde/preinstall"
 
 # Definitions
 TITLE="Window Maker Desktop Environment"
@@ -28,14 +30,14 @@ CHECK_WHIPTAIL() {
 }
 
 INST_THEMES() {
-	cd $DIR_SCRIPT/files
+	cd $DIR_SCRIPT/files/themes
 	mkdir -p "$HOME/.themes"
-	for zipfile in theme_*.zip; do
+	for zipfile in gtk_*.zip; do
 	    if [[ -f "$zipfile" ]]; then
 	        echo "Extracting $zipfile..."
 	        unzip -o "$zipfile" -d "$HOME/.themes"
 	    else
-	        echo "No files starting with 'theme_' found."
+	        echo "No files starting with 'gtk_' found."
 	    fi
 	done	
 }
@@ -46,6 +48,16 @@ INST_DOCKAPPS() {
 	sudo mkfontscale
 	sudo mkfontdir
 	sudo xset fp rehash
+	cd $DIR_SOURCE
+}
+
+INST_CONFIG() {
+	cp -a $DIR_SCRIPT/files/config/. $HOME/.config
+	cp -a $DIR_SCRIPT/files/wmde/. $HOME/.wmde
+}
+
+CONFIG_GENERAL() {
+	grep -q "Xft.dpi:" ~/.Xresources || echo "Xft.dpi: 96" >> $HOME/.Xresources
 }
 
 # Whiptail pages
@@ -77,6 +89,23 @@ Update system and begin installation?" 12 60; then
 		grep -vE '^\s*#|^\s*$' "$PKG_BASE_FILE" "$PKG_BASE_AUR_FILE" 2>/dev/null | xargs -r yay -S --needed --noconfirm
 }
 
+PAGE_BACKUP{
+	if whiptail --title "$TITLE" --yesno "Backup configuration files?\n
+	Creates a backup of any files WMDE may replace.\n
+	(can be found in the .wmde/preinstall folder of your home directory)" 10 60; then
+	    echo "Backing up config files..." && sleep 1
+	    mkdir -p $DIR_BACKUP/.config || { echo "Error: Could not create $DIR_BACKUP"; return 1; }
+	    for file in .Xresources .xprofile .xinitrc; do
+	    	[ -f "$HOME/$file" ] && cp -a "$HOME/$file" "$DIR_BACKUP/"
+	    done
+	    for folder in gtk-3.0 gtk-4.0; do
+	    	[ -f "$HOME/.config/$folder" ] && cp -a "$HOME/.config/$folder" "$DIR_BACKUP/.config"
+	    done
+	else
+	    echo "Skipping config backup." && sleep 1
+	fi
+}
+
 PAGE_COMPUTER{
 	if whiptail --title "$TITLE" --yes-button "Desktop" --no-button "Laptop" --yesno "Select computer type:" 8 60; then
 	    echo "Configuring system for a DESKTOP computer..." && sleep 1
@@ -87,6 +116,9 @@ PAGE_COMPUTER{
 
 # Running order
 PAGE_INSTALL
+PAGE_BACKUP
 INST_THEMES
 INST_DOCKAPPS
+INST_CONFIG
+CONFIG_GENERAL
 PAGE_COMPUTER

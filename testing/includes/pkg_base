@@ -67,6 +67,7 @@ terminus-font
 
 # Applications, TUI
 btop
+fastfetch
 micro
 
 # Applications, System, GUI
@@ -104,4 +105,3 @@ adwaita-cursors
 adwaita-icon-theme-legacy
 adwaita-icon-theme
 gnome-themes-extra
-xcursor-dmz

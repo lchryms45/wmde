@@ -21,6 +21,7 @@ selectdefaultapplication-git
 # Appearance
 tango-icon-theme
 tango-icon-theme-extras
+xcursor-dmz
 
 # Dockapps
 libdockapp
