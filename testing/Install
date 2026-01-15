@@ -5,7 +5,9 @@
 # Locations
 DIR_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DIR_WMDE="$HOME/.wmde"
-DIR_BACKUP="$HOME/.wmde/preinstall"
+DIR_BACKUP_ROOT="$HOME/.wmde/preinstall"
+DIR_TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+DIR_BACKUP="$DIR_BACKUP_ROOT/$DIR_TIMESTAMP"
 
 # Definitions
 TITLE="Window Maker Desktop Environment"
@@ -90,20 +92,32 @@ Update system and begin installation?" 12 60; then
 }
 
 PAGE_BACKUP() {
-	if whiptail --title "$TITLE" --yesno "Backup configuration files?\n
-	Creates a backup of any files WMDE may replace.\n
-	(can be found in the .wmde/preinstall folder of your home directory)" 10 60; then
-	    echo "Backing up config files..." && sleep 1
-	    mkdir -p $DIR_BACKUP/.config || { echo "Error: Could not create $DIR_BACKUP"; return 1; }
-	    for file in .Xresources .xprofile .xinitrc; do
-	    	[ -f "$HOME/$file" ] && cp -a "$HOME/$file" "$DIR_BACKUP/"
-	    done
-	    for folder in "gtk-3.0" "gtk-4.0"; do
-	    	[ -d "$HOME/.config/$folder" ] && cp -a "$HOME/.config/$folder" "$DIR_BACKUP/.config"
-	    done
-	else
-	    echo "Skipping config backup." && sleep 1
-	fi
+    if whiptail --title "$TITLE" --yesno "Backup configuration files?\n\n\
+Creates a backup of any files WMDE may replace.\n\
+Backups can be found in $HOME/.wmde/preinstall" 15 60; then
+        echo "Backing up config files to $DIR_TIMESTAMP..." && sleep 1
+        
+        # Create the timestamped directory and the .config subfolder
+        mkdir -p "$DIR_BACKUP/.config" || { echo "Error: Could not create $DIR_BACKUP"; return 1; }
+        
+        # Backup individual files from HOME
+        for file in .Xresources .xprofile .xinitrc; do
+            if [ -f "$HOME/$file" ]; then
+                cp -a "$HOME/$file" "$DIR_BACKUP/"
+            fi
+        done
+        
+        # Backup GTK directories from .config
+        for folder in "gtk-3.0" "gtk-4.0"; do
+            if [ -d "$HOME/.config/$folder" ]; then
+                cp -a "$HOME/.config/$folder" "$DIR_BACKUP/.config/"
+            fi
+        done
+        
+        echo "Backup completed successfully."
+    else
+        echo "Skipping config backup." && sleep 1
+    fi
 }
 
 PAGE_COMPUTER() {
