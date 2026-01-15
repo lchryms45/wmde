@@ -4,7 +4,7 @@
     Icon = "applications-internet.png";
   };
   pcmanfm.Pcmanfm = {
-    Icon = "~/GNUstep/Library/Icons/GNUstep/apps/48/system-file-manager.png";
+    Icon = "~/GNUstep/Library/Icons/GNUstep/system-file-manager.png";
   };
   mousepad.Mousepad = {
     SharedAppIcon = Yes;
@@ -15,7 +15,7 @@
   };
   Alacritty.Alacritty = {
     EmulateAppIcon = Yes;
-    Icon = "~/GNUstep/Library/Icons/GNUstep/apps/48/utilities-terminal.png";
+    Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
   };
   Alacritty = {
     AlwaysUserIcon = Yes;
@@ -31,7 +31,7 @@
     Icon = "applications-internet.png";
   };
   xterm.XTerm = {
-    Icon = "~/GNUstep/Library/Icons/GNUstep/apps/48/utilities-terminal.png";
+    Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
   };
   arandr. = {
     Icon = monitor.xpm;
