@@ -5,19 +5,19 @@
 ## Installation
 
 **Install git if you haven't already**:
-    ```bash
-    sudo pacman -S git
-    ```
+```bash
+sudo pacman -S git
+```
 **Clone this repository and install**:
-    ```bash
-    git clone https://github.com/lchryms45/wmde
-    cd wmde
-    ./Install
-    ```
+```bash
+git clone https://github.com/lchryms45/wmde
+cd wmde
+./Install
+```
 **mark Install as executable if it isn't already**:
-    ```bash
-    chmod +x Install
-    ```
+```bash
+chmod +x Install
+```
 
 Laptop config at the end of installer not done yet. Tested in a vm and seems ok!
 Lemme know if anything is super fucked up or whatever.
