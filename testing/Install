@@ -98,7 +98,7 @@ PAGE_BACKUP() {
 	    for file in .Xresources .xprofile .xinitrc; do
 	    	[ -f "$HOME/$file" ] && cp -a "$HOME/$file" "$DIR_BACKUP/"
 	    done
-	    for folder in gtk-3.0 gtk-4.0; do
+	    for folder in "gtk-3.0" "gtk-4.0"; do
 	    	[ -f "$HOME/.config/$folder" ] && cp -a "$HOME/.config/$folder" "$DIR_BACKUP/.config"
 	    done
 	else
