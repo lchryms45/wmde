@@ -32,16 +32,14 @@ I've already written a tiling window script if you wanna fuck with it.
 It's in $HOME/.wmde/scripts
 Run that shit, start 'sxhkd' (it's already installed), then the numpad does tiling like this;
 
-7	8	9
-TL	TC	TR
+7 top left 8 top cent 9 top rght
 
-4	5	6
-L 	C 	R
+4 left fht 5 cent fht 6 rght fht
 
-1 	2 	3
-BL	BC 	BR
+1 btm left 2 btm cent 3 btm rght
 
 0 does first two thirds, . does last third
+
 
 Yeah... so... get preggerz, init. xx.
 
