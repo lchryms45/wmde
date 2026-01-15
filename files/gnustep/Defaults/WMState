@@ -16,7 +16,7 @@
         Name = wmtime.wmtime;
         DropCommand = "wmtime %d";
         BuggyApplication = No;
-        AutoLaunch = No;
+        AutoLaunch = Yes;
         Position = "0,1";
         Lock = Yes;
         PasteCommand = "wmtime %s";
@@ -27,7 +27,7 @@
         Name = wmamixer.Wmamixer;
         DropCommand = "wmamixer -w %d";
         BuggyApplication = No;
-        AutoLaunch = No;
+        AutoLaunch = Yes;
         Position = "0,2";
         Lock = Yes;
         PasteCommand = "wmamixer -w %s";
@@ -49,7 +49,7 @@
         Name = wmsystemtray0.wmsystemtray;
         DropCommand = "wmsystemtray %d";
         BuggyApplication = No;
-        AutoLaunch = No;
+        AutoLaunch = Yes;
         Position = "0,3";
         Lock = Yes;
         PasteCommand = "wmsystemtray %s";
@@ -93,7 +93,7 @@
         Name = wmtime.wmtime;
         DropCommand = "wmtime %d";
         BuggyApplication = No;
-        AutoLaunch = No;
+        AutoLaunch = Yes;
         Position = "0,1";
         Lock = Yes;
         PasteCommand = "wmtime %s";
@@ -103,7 +103,7 @@
         Forced = No;
         Name = wmamixer.Wmamixer;
         DropCommand = "wmamixer -w %d";
-        BuggyApplication = No;
+        BuggyApplication = Yes;
         AutoLaunch = No;
         Position = "0,2";
         Lock = Yes;
@@ -126,7 +126,7 @@
         Name = wmsystemtray0.wmsystemtray;
         DropCommand = "wmsystemtray %d";
         BuggyApplication = No;
-        AutoLaunch = No;
+        AutoLaunch = Yes;
         Position = "0,3";
         Lock = Yes;
         PasteCommand = "wmsystemtray %s";
