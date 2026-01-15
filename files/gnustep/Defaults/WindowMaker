@@ -4,7 +4,7 @@
   FrameBorderColor = "#000000";
   MenuDisabledColor = "#7f7f7f";
   PixmapPath = (
-    "~/GNUstep/Library/Icons"
+    "~/GNUstep/Library/Icons/GNUstep"
     "~/GNUstep/Library/WindowMaker/Pixmaps",
     "~/GNUstep/Library/WindowMaker/Backgrounds",
     "~/GNUstep/Library/WindowMaker/CachedPixmaps",
@@ -71,7 +71,7 @@
   MoveToWorkspace6Key = "Shift+Mod1+6";
   HideOthersKey = "Shift+Mod1+H";
   IconPath = (
-    "~/GNUstep/Library/Icons"
+    "~/GNUstep/Library/Icons/GNUstep"
     "~/GNUstep/Library/WindowMaker/Pixmaps",
     "~/GNUstep/Library/WindowMaker/Backgrounds",
     "~/GNUstep/Library/WindowMaker/CachedPixmaps",
