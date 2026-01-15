@@ -86,7 +86,7 @@ Update system and begin installation?" 12 60; then
 		fi
 		
 		echo "Installing base packages..." && sleep 1
-		grep -vE '^\s*#|^\s*$' "$PKG_BASE_FILE" "$PKG_BASE_AUR_FILE" 2>/dev/null | xargs -r yay -S --needed --noconfirm
+		grep -vE '^\s*#|^\s*$' "$PKG_BASE" "$PKG_BASE_AUR" 2>/dev/null | xargs -r yay -S --needed --noconfirm
 }
 
 PAGE_BACKUP() {
