@@ -1,0 +1,46 @@
+{
+  firefox.Firefox = {
+    SharedAppIcon = Yes;
+    Icon = "applications-internet.png";
+  };
+  pcmanfm.Pcmanfm = {
+    Icon = "/usr/share/icons/GNUstep/apps/48/system-file-manager.png";
+  };
+  mousepad.Mousepad = {
+    SharedAppIcon = Yes;
+  };
+  Pcmanfm = {
+    AlwaysUserIcon = Yes;
+    Icon = "file-manager.png";
+  };
+  Alacritty.Alacritty = {
+    EmulateAppIcon = Yes;
+    Icon = "/usr/share/icons/GNUstep/apps/48/utilities-terminal.png";
+  };
+  Alacritty = {
+    AlwaysUserIcon = Yes;
+    Icon = GNUterm.tiff;
+    EmulateAppIcon = Yes;
+  };
+  Arandr = {
+    AlwaysUserIcon = Yes;
+    Icon = monitor.xpm;
+  };
+  firefox = {
+    AlwaysUserIcon = Yes;
+    Icon = "applications-internet.png";
+  };
+  xterm.XTerm = {
+    Icon = "/usr/share/icons/GNUstep/apps/48/utilities-terminal.png";
+  };
+  arandr. = {
+    Icon = monitor.xpm;
+  };
+  Navigator.firefox = {
+    AlwaysUserIcon = Yes;
+    Icon = "applications-internet.png";
+  };
+  "*" = {
+    AlwaysUserIcon = No;
+  };
+}

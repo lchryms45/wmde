@@ -34,13 +34,21 @@ CHECK_WHIPTAIL() {
 INST_THEMES() {
 	cd $DIR_SCRIPT/files/themes
 	mkdir -p "$HOME/.themes"
+	mkdir -p "$HOME/.icons"
 	for zipfile in gtk_*.zip; do
 	    if [[ -f "$zipfile" ]]; then
-	        echo "Extracting $zipfile..."
 	        unzip -o "$zipfile" -d "$HOME/.themes"
 	    else
 	        echo "No files starting with 'gtk_' found."
 	    fi
+	done
+
+	for zipfile in ico_*.zip; do
+		if [[ -f "$zipfile" ]]; then
+			unzip -o "$zipfile" -d "$HOME/.icons"
+		else
+		    echo "No files starting with 'ico_' found."
+		fi
 	done	
 }
 
@@ -56,9 +64,13 @@ INST_DOCKAPPS() {
 INST_CONFIG() {
 	cp -a $DIR_SCRIPT/files/config/. $HOME/.config
 	cp -a $DIR_SCRIPT/files/wmde/. $HOME/.wmde
+	cp -a $DIR_SCRIPT/files/gnustep/Defaults $HOME/GNUstep
+	cp -a $DIR_SCRIPT/files/gnustep/Themes $HOME/GNUstep/Library/WindowMaker
+	cp -a $DIR_SCRIPT/files/gnustep/autostart $HOME/GNUstep/Library/WindowMaker
 }
 
 CONFIG_GENERAL() {
+	xdg-user-dirs-update
 	grep -q "Xft.dpi:" ~/.Xresources || echo "Xft.dpi: 96" >> $HOME/.Xresources
 }
 
@@ -68,7 +80,7 @@ PAGE_INSTALL() {
 	PKG_BASE_AUR="$DIR_SCRIPT/includes/pkg_base_aur"
 	
 	if whiptail --title "$TITLE" --yesno \
-		"WMDE is a preconfigured Window Maker desktop environment for Arch Linux based systems.\n\n\
+"WMDE is a preconfigured Window Maker desktop environment for Arch Linux based systems.\n\n\
 For more information visit wmde.goreshit.co.uk\n\n\
 Update system and begin installation?" 12 60; then
 			echo "Updating system..." && sleep 1
@@ -92,22 +104,20 @@ Update system and begin installation?" 12 60; then
 }
 
 PAGE_BACKUP() {
-    if whiptail --title "$TITLE" --yesno "Backup configuration files?\n\n\
+    if whiptail --title "$TITLE" --yesno \
+"Backup configuration files?\n\n\
 Creates a backup of any files WMDE may replace.\n\
 Backups can be found in $HOME/.wmde/preinstall" 15 60; then
         echo "Backing up config files to $DIR_TIMESTAMP..." && sleep 1
         
-        # Create the timestamped directory and the .config subfolder
         mkdir -p "$DIR_BACKUP/.config" || { echo "Error: Could not create $DIR_BACKUP"; return 1; }
         
-        # Backup individual files from HOME
         for file in .Xresources .xprofile .xinitrc; do
             if [ -f "$HOME/$file" ]; then
                 cp -a "$HOME/$file" "$DIR_BACKUP/"
             fi
         done
         
-        # Backup GTK directories from .config
         for folder in "gtk-3.0" "gtk-4.0"; do
             if [ -d "$HOME/.config/$folder" ]; then
                 cp -a "$HOME/.config/$folder" "$DIR_BACKUP/.config/"
@@ -124,7 +134,15 @@ PAGE_COMPUTER() {
 	if whiptail --title "$TITLE" --yes-button "Desktop" --no-button "Laptop" --yesno "Select computer type:" 8 60; then
 	    echo "Configuring system for a DESKTOP computer..." && sleep 1
 	else
-	    echo "Configuring system for a LAPTOP computer..." && sleep 1
+	    echo "This dunt do shit yet." && sleep 1
+	fi
+}
+
+PAGE_REBOOT() {
+	if whiptail --title "$TITLE" --yes-button "Reboot" --no-button "Exit" --yesno "Reboot now? (Highly recommended!)" 8 60; then
+	    sudo reboot
+	else
+	    echo "Suit yerself. Latez!" && sleep 1
 	fi
 }
 
@@ -136,3 +154,4 @@ INST_DOCKAPPS
 INST_CONFIG
 CONFIG_GENERAL
 PAGE_COMPUTER
+PAGE_REBOOT

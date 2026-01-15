@@ -56,6 +56,7 @@ picom
 polkit-gnome
 sddm
 windowmaker
+xfce4-appfinder
 
 # Window manager tools
 sxhkd
@@ -98,7 +99,6 @@ xscreensaver
 # System Tray applets
 network-manager-applet
 pasystray
-xfce4-appfinder
 
 # Appearance
 adwaita-cursors
