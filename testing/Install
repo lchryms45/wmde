@@ -89,7 +89,7 @@ Update system and begin installation?" 12 60; then
 		grep -vE '^\s*#|^\s*$' "$PKG_BASE_FILE" "$PKG_BASE_AUR_FILE" 2>/dev/null | xargs -r yay -S --needed --noconfirm
 }
 
-PAGE_BACKUP{
+PAGE_BACKUP() {
 	if whiptail --title "$TITLE" --yesno "Backup configuration files?\n
 	Creates a backup of any files WMDE may replace.\n
 	(can be found in the .wmde/preinstall folder of your home directory)" 10 60; then
@@ -106,7 +106,7 @@ PAGE_BACKUP{
 	fi
 }
 
-PAGE_COMPUTER{
+PAGE_COMPUTER() {
 	if whiptail --title "$TITLE" --yes-button "Desktop" --no-button "Laptop" --yesno "Select computer type:" 8 60; then
 	    echo "Configuring system for a DESKTOP computer..." && sleep 1
 	else
