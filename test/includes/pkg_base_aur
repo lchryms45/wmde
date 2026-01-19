@@ -1,0 +1,26 @@
+# Desktop Environment
+windowmaker-extra
+xdgmenumaker
+skippy-xd-git
+
+# Fonts
+adobe-base-14-fonts // LONG BUILD!
+ttf-lucida-fonts
+ttf-ms-fonts // LONG BUILD!
+ttf-tahoma
+
+# Preferences
+picom-conf
+sddm-conf
+
+# Appearance
+tango-icon-theme // LONG BUILD!
+tango-icon-theme-extras // LONG BUILD!
+xcursor-dmz
+
+# Dockapps
+libdockapp
+# wmamixer
+# wmbattery
+# wmsystemtray
+# wmtime

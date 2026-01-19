@@ -1,0 +1,97 @@
+# Desktop Environment MAIN
+windowmaker
+noto-fonts
+terminus-font
+sddm
+alacritty
+picom
+polkit-gnome
+rofi
+sxhkd
+wmctrl
+
+# XDG
+xdg-desktop-portal-gtk
+xdg-user-dirs
+xdg-utils
+
+# XORG
+xorg-fonts-misc
+xorg-font-util
+xorg-mkfontscale
+xorg-xclipboard
+xorg-xev
+xorg-xfontsel
+xorg-xkill
+xorg-xprop
+xorg-xrandr
+xorg-xrdb
+xorg-xset
+
+# X11
+xclip
+xdotool
+
+# File System
+gparted
+pcmanfm
+gvfs
+gvfs-google
+gvfs-mtp
+gvfs-nfs
+gvfs-smb
+udiskie
+
+# Archiving
+xarchiver
+arj
+binutils
+bzip2
+cpio
+gzip
+lha
+lrzip
+lz4
+lzip
+lzop
+p7zip
+tar
+unarj
+unrar
+unzip
+xz
+zip
+zstd
+
+# Network
+firefox
+networkmanager
+network-manager-applet
+openssh
+wget
+
+# Applications TUI
+btop
+fastfetch
+micro
+
+# Applications GUI
+feh
+galculator
+geeqie
+gpick
+mousepad
+vlc
+
+# Preferences
+arandr
+lxappearance
+pasystray
+pavucontrol
+xscreensaver
+
+# Appearance
+adwaita-cursors
+adwaita-icon-theme-legacy
+adwaita-icon-theme
+gnome-themes-extra

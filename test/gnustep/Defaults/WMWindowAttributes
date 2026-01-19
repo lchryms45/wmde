@@ -1,0 +1,34 @@
+{
+  mousepad.Mousepad = {
+    SharedAppIcon = Yes;
+  };
+  pcmanfm.Pcmanfm = {
+    Icon = "~/GNUstep/Library/Icons/GNUstep/system-file-manager.png";
+  };
+  Alacritty.Alacritty = {
+    EmulateAppIcon = Yes;
+    Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
+  };
+  Pcmanfm = {
+    AlwaysUserIcon = Yes;
+    Icon = "file-manager.png";
+  };
+  Alacritty = {
+    AlwaysUserIcon = Yes;
+    Icon = GNUterm.tiff;
+    EmulateAppIcon = Yes;
+  };
+  Arandr = {
+    AlwaysUserIcon = Yes;
+    Icon = monitor.xpm;
+  };
+  xterm.XTerm = {
+    Icon = "~/GNUstep/Library/Icons/GNUstep/utilities-terminal.png";
+  };
+  arandr. = {
+    Icon = monitor.xpm;
+  };
+  "*" = {
+    AlwaysUserIcon = No;
+  };
+}

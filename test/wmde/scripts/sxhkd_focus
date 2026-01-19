@@ -1,0 +1,48 @@
+#!/bin/bash
+# Usage: focus-workspace-window [left|right|up|down]
+DIRECTION=$1
+CURRENT_WS=$(wmctrl -d | awk '$2=="*" {print $1}')
+ACTIVE_ID=$(xdotool getactivewindow)
+
+# Get precise geometry of active window (including decorations)
+eval $(xdotool getwindowgeometry --shell $ACTIVE_ID)
+ACX=$((X + WIDTH/2))
+ACY=$((Y + HEIGHT/2))
+
+TARGET_ID=""
+MIN_SCORE=9999999
+
+# Filter windows on current workspace
+while read -r ID WS _; do
+    [ "$WS" != "$CURRENT_WS" ] && [ "$WS" != "-1" ] && continue
+    [ "$((ID))" = "$ACTIVE_ID" ] && continue
+    
+    # Get precise geometry for each candidate
+    eval $(xdotool getwindowgeometry --shell $((ID)))
+    TCX=$((X + WIDTH/2))
+    TCY=$((Y + HEIGHT/2))
+    
+    DX=$((TCX - ACX))
+    DY=$((TCY - ACY))
+    ABS_DX=${DX#-}
+    ABS_DY=${DY#-}
+
+    case $DIRECTION in
+        left)  [ "$DX" -lt 0 ] && SCORE=$((ABS_DX + ABS_DY * 2)) ;;
+        right) [ "$DX" -gt 0 ] && SCORE=$((ABS_DX + ABS_DY * 2)) ;;
+        up)    [ "$DY" -lt 0 ] && SCORE=$((ABS_DY + ABS_DX * 2)) ;;
+        down)  [ "$DY" -gt 0 ] && SCORE=$((ABS_DY + ABS_DX * 2)) ;;
+    esac
+
+    if [ -n "$SCORE" ] && [ "$SCORE" -lt "$MIN_SCORE" ]; then
+        MIN_SCORE=$SCORE
+        TARGET_ID=$ID
+    fi
+    unset SCORE
+done < <(wmctrl -l)
+
+# Focus the target window
+if [ -n "$TARGET_ID" ]; then
+    # Removed the "-b add,above" flag to prevent staying on top
+    wmctrl -ia "$TARGET_ID"
+fi

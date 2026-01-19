@@ -1,0 +1,249 @@
+#!/bin/bash
+# WMDE Installer 0.2
+# 14/01/26
+
+# Locations
+DIR_SCRIPT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DIR_WMDE="$HOME/.wmde"
+DIR_BACKUP_ROOT="$HOME/.wmde/preinstall"
+DIR_TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
+DIR_BACKUP="$DIR_BACKUP_ROOT/$DIR_TIMESTAMP"
+DIR_GNUSTEP="$HOME/GNUstep"
+
+# Files
+AUTOSTART="$HOME/GNUstep/Library/WindowMaker/autostart"
+
+# Functions
+install_from_file() {
+    local file=$1
+    if [[ -f "$file" ]]; then
+        grep -vE '^\s*#|^\s*$' "$file" | xargs -r yay -S --needed --noconfirm
+    else
+        echo "Warning: $file not found."
+    fi
+}
+
+CHECK_WHIPTAIL() {
+	if command -v whiptail >/dev/null; then
+		echo "Starting WMDE installer" 
+	else
+		echo "Whiptail not found! Installing now..." && sleep 1
+		sudo pacman -S libnewt --noconfirm
+	fi
+}
+
+INST_THEMES() {
+	cd $DIR_SCRIPT/themes
+	mkdir -p "$HOME/.themes"
+	mkdir -p "$HOME/.icons"
+	for zipfile in gtk_*.zip; do
+	    if [[ -f "$zipfile" ]]; then
+	        unzip -o "$zipfile" -d "$HOME/.themes"
+	    else
+	        echo "ERROR: GTK theme files missing!"
+	    fi
+	done
+
+	for zipfile in ico_*.zip; do
+		if [[ -f "$zipfile" ]]; then
+			unzip -o "$zipfile" -d "$HOME/.icons"
+		else
+		    echo "ERROR: Icon theme files missing!"
+		fi
+	done
+
+	for zipfile in cur_*.zip; do
+		if [[ -f "$zipfile" ]]; then
+			unzip -o "$zipfile" -d "$HOME/.icons"
+		else
+		    echo "ERROR: Cursor theme files missing!"
+		fi
+	done		
+}
+
+INST_DOCKAPPS() {
+	mkdir -p $HOME/.local/bin
+	cp -a $DIR_SCRIPT/dockapps/. $HOME/.local/bin
+	
+	# wmsystemtray font fix
+	cd /usr/share/fonts/misc
+	sudo mkfontscale
+	sudo mkfontdir
+	sudo xset fp rehash
+	cd $DIR_SOURCE
+}
+
+INST_CONFIG() {
+	mkdir -p $HOME/.config
+	cp -a $DIR_SCRIPT/files/config/. $HOME/.config
+	mkdir -p $HOME/.wmde
+	cp -a $DIR_SCRIPT/files/wmde/. $HOME/.wmde
+	mkdir -p $HOME/GNUstep/
+	cp -a $DIR_SCRIPT/files/gnustep/. $HOME/GNUstep
+}
+
+CONFIG_GENERAL() {
+	xdg-user-dirs-update
+	grep -q "Xft.dpi:" ~/.Xresources || echo "Xft.dpi: 96" >> $HOME/.Xresources
+	grep -q "export QT_QPA_PLATFORMTHEME=" ~/.xprofile || echo "export QT_QPA_PLATFORMTHEME=gtk3" >> $HOME/.xprofile
+	sudo systemctl enable sddm.service
+	mkdir -p .local/bin
+	ln -s $DIR_WMDE/ass/ass $HOME/.local/bin/wmde-ass
+	ln -s $DIR_WMDE/ass/themes $HOME/.local/bin/wmde-themes
+}
+
+# Whiptail pages
+PAGE_INSTALL() {
+	PKG_BASE="$DIR_SCRIPT/includes/pkg_base"
+	PKG_BASE_AUR="$DIR_SCRIPT/includes/pkg_base_aur"
+	
+	if whiptail --title "Window Maker Desktop Environment" --yesno \
+"WMDE is a preconfigured Window Maker desktop environment for Arch Linux based systems.\n\n\
+For more information visit wmde.goreshit.co.uk\n\n\
+Update system and begin installation?" 12 60; then
+			echo "Updating system..." && sleep 1
+			sudo pacman -Syu --needed git base-devel --noconfirm
+		else
+			echo "Installation cancelled."
+			exit 0
+		fi
+
+		if ! command -v yay >/dev/null; then
+			echo "yay not found. Installing now..." && sleep 1
+			cd /tmp || exit
+			git clone https://aur.archlinux.org/yay.git
+			cd yay && makepkg -si --noconfirm
+			yay -Syu
+			cd "$DIR_SCRIPT" || exit
+		fi
+		
+		echo "Installing base packages..." && sleep 1
+		cat "$PKG_BASE" "$PKG_BASE_AUR" | grep -vE '^\s*#|^\s*$' | xargs -r yay -S --needed --noconfirm
+}
+
+PAGE_PASS() {whiptail --title "Window Maker Desktop Environment" --ok-button "Roger that!" --msgbox \
+"Password entry required at various steps of installation, so don't go too far for too long!" 12 60}
+
+PAGE_BACKUP() {
+    if whiptail --title "Backup" --yesno \
+"Backup configuration files?\n\n\
+Creates a backup of any files WMDE may replace.\n\
+Backups can be found in $HOME/.wmde/preinstall" 15 60; then
+        echo "Backing up config files to $DIR_TIMESTAMP..." && sleep 1
+        
+        mkdir -p "$DIR_BACKUP/.config" || { echo "Error: Could not create $DIR_BACKUP"; return 1; }
+        
+        for file in .Xresources .xprofile .xinitrc; do
+            if [ -f "$HOME/$file" ]; then
+                cp -a "$HOME/$file" "$DIR_BACKUP/"
+            fi
+        done
+        
+        for folder in "gtk-3.0" "gtk-4.0" "picom.conf"; do
+            if [ -d "$HOME/.config/$folder" ]; then
+                cp -a "$HOME/.config/$folder" "$DIR_BACKUP/.config/"
+            fi
+        done
+
+		if [ -d "$DIR_GNUSTEP" ]; then
+		    cp -ra "$DIR_GNUSTEP" "$DIR_BACKUP/"
+		fi
+        
+        echo "Backup completed successfully."
+    else
+        echo "Skipping config backup." && sleep 1
+    fi
+}
+
+PAGE_COMPUTER() {
+	if whiptail --title "System Type" --yes-button "Desktop" --no-button "Laptop" --yesno "Select computer type:" 8 60; then
+	    echo "Configuring system for a DESKTOP computer..." && sleep 1
+	else
+	    echo "This dunt do shit yet." && sleep 1
+	fi
+}
+
+PAGE_SETTINGS() {
+	CHOICES=$(whiptail --title "Configure Settings" --separate-output --checklist \
+	"Enable or disable various settings. Can be changed later." 15 60 4 \
+	
+	"WMDE Assistant" "WMDE guide/settings application on startup" ON \
+	"Compositor" "Enables transparency/v-sync (Picom)" ON \
+	"Screensaver" "Enable screensaver daemon on startup" ON \
+	"Alternate Keybinds" "i3-like keyboard bindings" OFF 3>&1 1>&2 2>&3)
+
+	if [ $? -ne 0 ]; then
+	    echo "Options left as default" && sleep 1
+	fi
+
+	while read -r CHOICE; do
+	    case "$CHOICE" in
+	        "WMDE Assistant")
+	            if grep -Fxq "wmde-ass &" "$AUTOSTART"; then
+	            	:
+	            elif grep -q "^#\s*wmde-ass &" "$AUTOSTART"; then
+	            	sed -i "s/^#\s*wmde-ass &/wmde-ass &/" "$AUTOSTART"
+	            else
+	            	echo "wmde-ass &" >> "$AUTOSTART"
+	            fi
+	            ;;
+	        "Compositor")
+	            if grep -Fxq "picom &" "$AUTOSTART"; then
+	            	:
+	            elif grep -q "^#\s*picom &" "$AUTOSTART"; then
+	            	sed -i "s/^#\s*picom &/picom &/" "$AUTOSTART"
+	            else
+	            	echo "picom &" >> "$AUTOSTART"
+	            fi
+	            ;;
+	        "Screensaver")
+	            if grep -Fxq "xscreensaver &" "$AUTOSTART"; then
+	            	:
+	            elif grep -q "^#\s*xscreensaver &" "$AUTOSTART"; then
+	            	sed -i "s/^#\s*xscreensaver &/xscreensaver &/" "$AUTOSTART"
+	            else
+	            	echo "xscreensaver &" >> "$AUTOSTART"
+	            fi
+	            ;;
+	        "Alternate Keybinds")
+	            mkdir -p $DIR_GNUSTEP/Defaults
+	            cp $DIR_SCRIPT/wmde/defaults/keys_alt $DIR_GNUSTEP/Defaults/WindowMaker
+	            mkdir -p $HOME/.config/sxhkd
+	            cp $DIR_SCRIPT/wmde/defaults/sxhkd_alt $HOME/.config/sxhkd/sxhkdrc
+	        *)
+	            ;;
+	    esac
+	done <<< "$CHOICES"
+}
+
+PAGE_GLOBALTHEMES() {
+	if whiptail --title "Global Theme Support"--yesno "Install dependencies required for Global Themes?\n\n\
+	Global Themes aim to create a unified look across GTK, QT and Window Maker applications.\n\
+	Themes can be downloaded and installed with the WMDE assistant." 12 60; then
+	    yay -S --needed qt5gtk2 qt6gtk2 --noconfirm
+	else
+	    echo "Global Theme dependencies skipped." && sleep 1
+	fi
+}
+
+PAGE_REBOOT() {
+	if whiptail --title "Installation Complete" --yes-button "Reboot" --no-button "Exit" --yesno "Reboot now? (Highly recommended!)" 8 60; then
+	    sudo reboot
+	else
+	    echo "Suit yerself. Latez!" && sleep 1
+	fi
+}
+
+# Running order
+CHECK_WHIPTAIL
+PAGE_INSTALL
+PAGE_PASS
+PAGE_BACKUP
+INST_THEMES
+INST_DOCKAPPS
+INST_CONFIG
+#PAGE_COMPUTER
+#CONFIG_GENERAL
+#PAGE_SETTINGS
+PAGE_GLOBALTHEMES
+PAGE_REBOOT

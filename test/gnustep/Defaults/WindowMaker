@@ -1,0 +1,97 @@
+{
+  THMaximizeKey = "Shift+Mod4+Up";
+  FTitleColor = "#ffffff";
+  FrameBorderColor = "#000000";
+  MenuDisabledColor = "#7f7f7f";
+  PixmapPath = (
+    "~/GNUstep/Library/Icons/GNUstep"
+    "~/GNUstep/Library/WindowMaker/Pixmaps",
+    "~/GNUstep/Library/WindowMaker/Backgrounds",
+    "~/GNUstep/Library/WindowMaker/CachedPixmaps",
+    "~/pixmaps",
+    "/usr/share/WindowMaker/Pixmaps",
+    "/usr/share/WindowMaker/Backgrounds",
+    "/usr/share/pixmaps"
+  );
+  IconTitleBack = "#000000";
+  HotCornerEdge = 2;
+  MoveToWorkspace9Key = "Shift+Mod1+9";
+  ToggleKbdModeKey = None;
+  ClipTitleFont = "Sans:weight=200:pixelsize=10";
+  MaximizeKey = "Mod1+F";
+  ShadeKey = "Mod1+S";
+  MaximusKey = "Mod1+T";
+  MoveToWorkspace7Key = "Shift+Mod1+7";
+  PartialCaptureKey = "Control+Print";
+  HotCornerDelay = 250;
+  CenterKey = "Shift+Mod1+C";
+  IconTitleColor = "#ffffff";
+  ExitKey = "Control+Mod1+Delete";
+  GroupNextKey = "Mod4+Tab";
+  MenuTextColor = "#000000";
+  MoveToWorkspace2Key = "Shift+Mod1+2";
+  AntialiasedText = YES;
+  MenuTitleColor = "#ffffff";
+  MenuTitleFont = "Sans:weight=200:pixelsize=12";
+  MoveToWorkspace5Key = "Shift+Mod1+5";
+  HotCorners = NO;
+  WindowRelaunchKey = "Mod1+N";
+  MoveTo6to12Head = None;
+  DbClickFullScreen = YES;
+  IconPosition = trh;
+  OmnipresentKey = "Shift+Mod1+S";
+  HighlightTextColor = "#000000";
+  ClipRaiseLowerKey = "Mod1+C";
+  MoveToNextWorkspaceKey = "Control+Shift+Mod1+Right";
+  EnforceIconMargin = NO;
+  HelpBalloons = YES;
+  AutoArrangeIcons = YES;
+  PrevWorkspaceKey = "Shift+Mod1+Left";
+  KeepOnTopKey = "Shift+Mod1+T";
+  MoveResizeKey = "Mod1+R";
+  ClipTitleColor = "#000000";
+  AppIconBalloons = YES;
+  MoveTo12to6Head = None;
+  HotCornerActions = (None, None, None, None);
+  CloseKey = "Mod1+F4";
+  FrameFocusedBorderColor = "#000000";
+  HighlightColor = "#ffffff";
+  WindowCaptureKey = "Shift+Print";
+  WindowTitleFont = "Sans:weight=200:pixelsize=12";
+  MoveToWorkspace8Key = "Shift+Mod1+8";
+  NextWorkspaceKey = "Shift+Mod1+Right";
+  GroupPrevKey = "Shift+Mod4+Tab";
+  WrapMenus = YES;
+  RunKey = F10;
+  MoveToWorkspace3Key = "Shift+Mod1+3";
+  MinimizeAllKey = "Shift+Mod1+M";
+  CClipTitleColor = "#616161";
+  LHMaximizeKey = "Shift+Mod4+Left";
+  MoveToPrevWorkspaceKey = "Control+Shift+Mod1+Left";
+  MoveToWorkspace6Key = "Shift+Mod1+6";
+  HideOthersKey = "Shift+Mod1+H";
+  IconPath = (
+    "~/GNUstep/Library/Icons/GNUstep"
+    "~/GNUstep/Library/WindowMaker/Pixmaps",
+    "~/GNUstep/Library/WindowMaker/Backgrounds",
+    "~/GNUstep/Library/WindowMaker/CachedPixmaps",
+    "~/pixmaps",
+    "/usr/share/WindowMaker/Icons",
+    "/usr/share/WindowMaker/Pixmaps",
+    "/usr/share/pixmaps",
+    "/usr/share/icons/Tango/64x64/apps",
+    "/usr/share/icons/GNUstep/apps/48",
+    "/usr/share/icons/GNUstep/categories/48"
+  );
+  MoveToWorkspace10Key = "Shift+Mod1+0";
+  KbdModeLock = NO;
+  BHMaximizeKey = "Shift+Mod4+Down";
+  UTitleColor = "#000000";
+  PTitleColor = "#ffffff";
+  CloseRootMenuByLeftOrRightMouseClick = YES;
+  MoveToWorkspace1Key = "Shift+Mod1+1";
+  DockRaiseLowerKey = "Mod1+D";
+  MoveToWorkspace4Key = "Shift+Mod1+4";
+  RHMaximizeKey = "Shift+Mod4+Right";
+  FrameSelectedBorderColor = "#ffffff";
+}

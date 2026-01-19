@@ -1,0 +1,111 @@
+#!/bin/bash
+
+RC_DIR="$HOME/.config/sxhkd"
+RC_FILE="$RC_DIR/sxhkdrc"
+START_MARKER="### BEGIN TILING SECTION ###"
+END_MARKER="### END TILING SECTION ###"
+
+# Gap size and Window Maker decoration offsets
+G=10
+TITLE_H=28   
+BORDERS=4    
+
+# Setup environment
+[ ! -d "$RC_DIR" ] && mkdir -p "$RC_DIR"
+[ ! -f "$RC_FILE" ] && touch "$RC_FILE"
+
+# Get Resolution
+RES=$(xrandr --current | grep '*' | awk '{print $1}')
+SW=$(echo ${RES%x*})
+SH=$(echo ${RES#*x})
+
+# Basic Units
+W_3rd=$(( (SW - (4 * G)) / 3 - BORDERS ))
+H_half=$(( (SH - (3 * G)) / 2 ))
+
+# Position Math
+X1=$G
+X2=$((G + W_3rd + BORDERS + G))
+X3=$((G + W_3rd + BORDERS + G + W_3rd + BORDERS + G))
+Y1=$G
+Y2=$((G + H_half + G))
+
+# Dimensions Math
+H_full=$(( SH - (2 * G) - TITLE_H ))
+H_adj=$(( H_half - TITLE_H ))
+W_2_3rd=$(( (W_3rd * 2) + G + BORDERS ))
+
+get_wmctrl() {
+    # This explicitly removes the "above" state before moving the window
+    echo "    wmctrl -r :ACTIVE: -b remove,above && wmctrl -r :ACTIVE: -e 0,$1,$2,$3,$4"
+}
+
+# Generate Content
+TILING_CONTENT=$(cat <<EOF
+$START_MARKER
+# --- NUMPAD GRID ---
+~super + shift + KP_7
+$(get_wmctrl $X1 $Y1 $W_3rd $H_adj)
+~super + shift + KP_8
+$(get_wmctrl $X2 $Y1 $W_3rd $H_adj)
+~super + shift + KP_9
+$(get_wmctrl $X3 $Y1 $W_3rd $H_adj)
+~super + shift + KP_1
+$(get_wmctrl $X1 $Y2 $W_3rd $H_adj)
+~super + shift + KP_2
+$(get_wmctrl $X2 $Y2 $W_3rd $H_adj)
+~super + shift + KP_3
+$(get_wmctrl $X3 $Y2 $W_3rd $H_adj)
+~super + shift + KP_4
+$(get_wmctrl $X1 $Y1 $W_3rd $H_full)
+~super + shift + KP_5
+$(get_wmctrl $X2 $Y1 $W_3rd $H_full)
+~super + shift + KP_6
+$(get_wmctrl $X3 $Y1 $W_3rd $H_full)
+
+# --- NUMPAD BOTTOM BAR ---
+~super + shift + KP_0
+$(get_wmctrl $X1 $Y1 $W_2_3rd $H_full)
+~super + shift + KP_Decimal
+$(get_wmctrl $X3 $Y1 $W_3rd $H_full)
+
+# --- ARROW KEY SPECIALS ---
+# Left two-thirds (Super + Shift + Left)
+super + shift + Left
+$(get_wmctrl $X1 $Y1 $W_2_3rd $H_full)
+
+# Right third (Super + Shift + Right) - FIXED to X3
+super + shift + Right
+$(get_wmctrl $X3 $Y1 $W_3rd $H_full)
+
+# Top right sixth (Super + Shift + Up)
+super + shift + Up
+$(get_wmctrl $X3 $Y1 $W_3rd $H_adj)
+
+# Bottom right sixth (Super + Shift + Down)
+super + shift + Down
+$(get_wmctrl $X3 $Y2 $W_3rd $H_adj)
+$END_MARKER
+EOF
+)
+
+# Injection Logic
+if grep -q "$START_MARKER" "$RC_FILE"; then
+    TMP_FILE=$(mktemp)
+    sed "/$START_MARKER/,/$END_MARKER/d" "$RC_FILE" | sed -e :a -e '/^\n*$/{$d;N;ba' -e '}' > "$TMP_FILE"
+    echo -e "\n$TILING_CONTENT" >> "$TMP_FILE"
+    mv "$TMP_FILE" "$RC_FILE"
+else
+    echo -e "\n$TILING_CONTENT" >> "$RC_FILE"
+fi
+
+# Robust Restart
+pkill -x sxhkd
+sleep 0.5
+DISPLAY=:0 sxhkd -c "$RC_FILE" > /tmp/sxhkd.log 2>&1 &
+
+if pgrep -x sxhkd > /dev/null; then
+    echo "Tiling shortcuts generated!"
+else
+    echo "Error: sxhkd failed to start. Check /tmp/sxhkd.log."
+fi
