@@ -88,8 +88,8 @@ CONFIG_GENERAL() {
 	grep -q "export QT_QPA_PLATFORMTHEME=" ~/.xprofile || echo "export QT_QPA_PLATFORMTHEME=gtk3" >> $HOME/.xprofile
 	sudo systemctl enable sddm.service
 	mkdir -p .local/bin
-	ln -s $DIR_WMDE/ass/ass $HOME/.local/bin/wmde-ass
-	ln -s $DIR_WMDE/ass/themes $HOME/.local/bin/wmde-themes
+	ln -sf $DIR_WMDE/ass/ass $HOME/.local/bin/wmde-ass
+	ln -sf $DIR_WMDE/ass/themes $HOME/.local/bin/wmde-themes
 }
 
 # Whiptail pages
