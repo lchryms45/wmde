@@ -123,7 +123,7 @@ Update system and begin installation?" 12 60; then
 
 PAGE_PASS() {
     whiptail --title "Window Maker Desktop Environment" --ok-button "Roger that!" --msgbox \
-    "Password entry required at various steps of installation, so don't go too far for too long!" 12 60
+"Password entry required at various steps of installation, so don't go too far for too long!" 8 60
 }
 
 PAGE_BACKUP() {
@@ -132,7 +132,8 @@ PAGE_BACKUP() {
 Creates a backup of any files WMDE may replace.\n\
 Backups can be found in $HOME/.wmde/preinstall" 15 60; then
         echo "Backing up config files to $DIR_TIMESTAMP..." && sleep 1
-        
+
+        for f in .Xresources .xprofile .xinitrc; do [ -f "$HOME/$f" ] || touch "$HOME/$f"; done
         mkdir -p "$DIR_BACKUP/.config" || { echo "Error: Could not create $DIR_BACKUP"; return 1; }
         
         for file in .Xresources .xprofile .xinitrc; do
