@@ -121,8 +121,10 @@ Update system and begin installation?" 12 60; then
 		cat "$PKG_BASE" "$PKG_BASE_AUR" | grep -vE '^\s*#|^\s*$' | xargs -r yay -S --needed --noconfirm
 }
 
-PAGE_PASS() {whiptail --title "Window Maker Desktop Environment" --ok-button "Roger that!" --msgbox \
-"Password entry required at various steps of installation, so don't go too far for too long!" 12 60}
+PAGE_PASS() {
+    whiptail --title "Window Maker Desktop Environment" --ok-button "Roger that!" --msgbox \
+    "Password entry required at various steps of installation, so don't go too far for too long!" 12 60
+}
 
 PAGE_BACKUP() {
     if whiptail --title "Backup" --yesno \
