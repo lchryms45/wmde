@@ -212,6 +212,7 @@ PAGE_SETTINGS() {
 	            cp $DIR_SCRIPT/wmde/defaults/keys_alt $DIR_GNUSTEP/Defaults/WindowMaker
 	            mkdir -p $HOME/.config/sxhkd
 	            cp $DIR_SCRIPT/wmde/defaults/sxhkd_alt $HOME/.config/sxhkd/sxhkdrc
+	            ;;
 	        *)
 	            ;;
 	    esac
