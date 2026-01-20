@@ -220,7 +220,7 @@ PAGE_SETTINGS() {
 }
 
 PAGE_GLOBALTHEMES() {
-	if whiptail --title "Global Theme Support"--yesno "Install dependencies required for Global Themes?\n\n\
+	if whiptail --title "Global Theme Support" --yesno "Install dependencies required for Global Themes?\n\n\
 	Global Themes aim to create a unified look across GTK, QT and Window Maker applications.\n\
 	Themes can be downloaded and installed with the WMDE assistant." 12 60; then
 	    yay -S --needed qt5gtk2 qt6gtk2 --noconfirm
@@ -245,8 +245,8 @@ PAGE_BACKUP
 INST_THEMES
 INST_DOCKAPPS
 INST_CONFIG
-#PAGE_COMPUTER
-#CONFIG_GENERAL
-#PAGE_SETTINGS
+PAGE_COMPUTER
+CONFIG_GENERAL
+PAGE_SETTINGS
 PAGE_GLOBALTHEMES
 PAGE_REBOOT
