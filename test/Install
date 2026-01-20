@@ -167,58 +167,58 @@ PAGE_COMPUTER() {
 }
 
 PAGE_SETTINGS() {
-	CHOICES=$(whiptail --title "Configure Settings" --separate-output --checklist \
-	"Enable or disable various settings. Can be changed later." 15 60 4 \
-	
-	"WMDE Assistant" "WMDE guide/settings application on startup" ON \
-	"Compositor" "Enables transparency/v-sync (Picom)" ON \
-	"Screensaver" "Enable screensaver daemon on startup" ON \
-	"Alternate Keybinds" "i3-like keyboard bindings" OFF 3>&1 1>&2 2>&3)
+    CHOICES=$(whiptail --title "Configure Settings" --separate-output --checklist \
+    "Enable or disable various settings. Can be changed later." 15 60 4 \
+    "WMDE Assistant" "WMDE guide/settings application on startup" ON \
+    "Compositor" "Enables transparency/v-sync (Picom)" ON \
+    "Screensaver" "Enable screensaver daemon on startup" ON \
+    "Alternate Keybinds" "i3-like keyboard bindings" OFF 3>&1 1>&2 2>&3)
 
-	if [ $? -ne 0 ]; then
-	    echo "Options left as default" && sleep 1
-	fi
+    if [ $? -ne 0 ]; then
+        echo "Options left as default" && sleep 1
+        return 1  # Exit the function early
+    fi
 
-	while read -r CHOICE; do
-	    case "$CHOICE" in
-	        "WMDE Assistant")
-	            if grep -Fxq "wmde-ass &" "$AUTOSTART"; then
-	            	:
-	            elif grep -q "^#\s*wmde-ass &" "$AUTOSTART"; then
-	            	sed -i "s/^#\s*wmde-ass &/wmde-ass &/" "$AUTOSTART"
-	            else
-	            	echo "wmde-ass &" >> "$AUTOSTART"
-	            fi
-	            ;;
-	        "Compositor")
-	            if grep -Fxq "picom &" "$AUTOSTART"; then
-	            	:
-	            elif grep -q "^#\s*picom &" "$AUTOSTART"; then
-	            	sed -i "s/^#\s*picom &/picom &/" "$AUTOSTART"
-	            else
-	            	echo "picom &" >> "$AUTOSTART"
-	            fi
-	            ;;
-	        "Screensaver")
-	            if grep -Fxq "xscreensaver &" "$AUTOSTART"; then
-	            	:
-	            elif grep -q "^#\s*xscreensaver &" "$AUTOSTART"; then
-	            	sed -i "s/^#\s*xscreensaver &/xscreensaver &/" "$AUTOSTART"
-	            else
-	            	echo "xscreensaver &" >> "$AUTOSTART"
-	            fi
-	            ;;
-	        "Alternate Keybinds")
-	            mkdir -p $DIR_GNUSTEP/Defaults
-	            cp $DIR_SCRIPT/wmde/defaults/keys_alt $DIR_GNUSTEP/Defaults/WindowMaker
-	            mkdir -p $HOME/.config/sxhkd
-	            cp $DIR_SCRIPT/wmde/defaults/sxhkd_alt $HOME/.config/sxhkd/sxhkdrc
-	            ;;
-	        *)
-	            ;;
-	    esac
-	done <<< "$CHOICES"
+    # Only run loop if choices made
+    if [ -n "$CHOICES" ]; then
+        while read -r CHOICE; do
+            case "$CHOICE" in
+                "WMDE Assistant")
+                    if grep -Fxq "wmde-ass &" "$AUTOSTART"; then :
+                    elif grep -q "^#\s*wmde-ass &" "$AUTOSTART"; then
+                        sed -i "s/^#\s*wmde-ass &/wmde-ass &/" "$AUTOSTART"
+                    else
+                        echo "wmde-ass &" >> "$AUTOSTART"
+                    fi
+                    ;;
+                "Compositor")
+                    if grep -Fxq "picom &" "$AUTOSTART"; then :
+                    elif grep -q "^#\s*picom &" "$AUTOSTART"; then
+                        sed -i "s/^#\s*picom &/picom &/" "$AUTOSTART"
+                    else
+                        echo "picom &" >> "$AUTOSTART"
+                    fi
+                    ;;
+                "Screensaver")
+                    if grep -Fxq "xscreensaver &" "$AUTOSTART"; then :
+                    elif grep -q "^#\s*xscreensaver &" "$AUTOSTART"; then
+                        sed -i "s/^#\s*xscreensaver &/xscreensaver &/" "$AUTOSTART"
+                    else
+                        echo "xscreensaver &" >> "$AUTOSTART"
+                    fi
+                    ;;
+                "Alternate Keybinds")
+                    # Added quotes to variables to prevent path errors
+                    mkdir -p "$DIR_GNUSTEP/Defaults"
+                    cp "$DIR_SCRIPT/wmde/defaults/keys_alt" "$DIR_GNUSTEP/Defaults/WindowMaker"
+                    mkdir -p "$HOME/.config/sxhkd"
+                    cp "$DIR_SCRIPT/wmde/defaults/sxhkd_alt" "$HOME/.config/sxhkd/sxhkdrc"
+                    ;;
+            esac
+        done <<< "$CHOICES"
+    fi
 }
+
 
 PAGE_GLOBALTHEMES() {
 	if whiptail --title "Global Theme Support" --yesno "Install dependencies required for Global Themes?\n\n\
