@@ -75,11 +75,11 @@ INST_DOCKAPPS() {
 
 INST_CONFIG() {
 	mkdir -p $HOME/.config
-	cp -a $DIR_SCRIPT/files/config/. $HOME/.config
+	cp -a "$DIR_SCRIPT/files/config/." "$HOME/.config"
 	mkdir -p $HOME/.wmde
-	cp -a $DIR_SCRIPT/files/wmde/. $HOME/.wmde
+	cp -a "$DIR_SCRIPT/files/wmde/." "$HOME/.wmde"
 	mkdir -p $HOME/GNUstep/
-	cp -a $DIR_SCRIPT/files/gnustep/. $HOME/GNUstep
+	cp -a "$DIR_SCRIPT/files/gnustep/." "$HOME/GNUstep"
 }
 
 CONFIG_GENERAL() {
@@ -122,7 +122,7 @@ Update system and begin installation?" 12 60; then
 }
 
 PAGE_PASS() {
-    whiptail --title "Window Maker Desktop Environment" --ok-button "Roger that!" --msgbox \
+    whiptail --title "Window Maker Desktop Environment" --msgbox \
 "Password entry required at various steps of installation, so don't go too far for too long!" 8 60
 }
 
@@ -130,7 +130,7 @@ PAGE_BACKUP() {
     if whiptail --title "Backup" --yesno \
 "Backup configuration files?\n\n\
 Creates a backup of any files WMDE may replace.\n\
-Backups can be found in $HOME/.wmde/preinstall" 15 60; then
+Backups can be found in $HOME/.wmde/preinstall" 8 60; then
         echo "Backing up config files to $DIR_TIMESTAMP..." && sleep 1
 
         for f in .Xresources .xprofile .xinitrc; do [ -f "$HOME/$f" ] || touch "$HOME/$f"; done
